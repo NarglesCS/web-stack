@@ -1,7 +1,23 @@
 services:
+
+  frontend:
+    build:
+      context: frontend
+      target: dev-envs
+    container_name: react-ui
+    restart: always
+    ports:
+      - "80:3000"
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   backend:
     build:
       context: backend
+      args:
+        BUILDPLATFORM: "linux/amd64"
+    container_name: net-backend
     restart: always
     secrets:
       - db-password
@@ -34,9 +50,10 @@ services:
   proxy:
     build: proxy
     ports:
-      - 80:80
-    depends_on: 
+      - 81:81
+    depends_on:
       - backend
+      - frontend
 
 volumes:
   db-data:
