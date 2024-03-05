@@ -46,6 +46,7 @@ services:
     environment:
       - MYSQL_DATABASE=example
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+
   redis:
     image: redis:latest
     ports:
