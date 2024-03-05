@@ -64,18 +64,22 @@ $ docker compose up -d
 Listing containers must show three containers running and the port mapping as below:
 ```
 $ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
-8906b14c5ad1        nginx-aspnet-mysql_proxy     "nginx -g 'daemon of…"   2 minutes ago       Up 2 minutes        0.0.0.0:80->80/tcp    nginx-aspnet-mysql
-l_proxy_1
-13e0e0a7715a        nginx-aspnet-mysql_backend   "/server"                2 minutes ago       Up 2 minutes        8000/tcp              nginx-aspnet-mysq
-l_backend_1
-ca8c5975d205        mysql:5.7                    "docker-entrypoint.s…"   2 minutes ago       Up 2 minutes        3306/tcp, 33060/tcp   nginx-aspnet-mysql
-l_db_1
+CONTAINER ID   IMAGE                COMMAND                  CREATED          STATUS                    PORTS                                                                              NAMES
+769684ed4b05   web-stack_proxy      "nginx -g 'daemon of…"   32 seconds ago   Up 31 seconds             80/tcp, 0.0.0.0:81->81/tcp, :::81->81/tcp                                          web-stack_proxy_1
+98332efa8fe5   web-stack_backend    "dotnet aspnetapp.dll"   32 seconds ago   Up 32 seconds                                                                                                net-backend
+1c20e5b847bc   mariadb:10-focal     "docker-entrypoint.s…"   40 seconds ago   Up 39 seconds (healthy)   3306/tcp                                                                           web-stack_db_1
+9eff74ff17c2   web-stack_frontend   "docker-entrypoint.s…"   40 seconds ago   Up 39 seconds             0.0.0.0:3000->3000/tcp, :::3000->3000/tcp, 0.0.0.0:80->3000/tcp, :::80->3000/tcp   react-ui
+
 ```
 
-After the application starts, navigate to `http://localhost:80` in your web browser or run:
+After the application starts, 
+
+To access the frontend, navigate to `http://localhost:80` in your browser:
+![image](https://github.com/NarglesCS/web-stack/assets/24685640/d99ef99a-5152-49f9-b3da-192c79445206)
+
+To access the backend, navigate to `http://localhost:81` in your web browser or run:
 ```
-$ curl localhost:80
+$ curl localhost:81
 ["Blog post #0","Blog post #1","Blog post #2","Blog post #3","Blog post #4"]
 ```
 
