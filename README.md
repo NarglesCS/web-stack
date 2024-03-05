@@ -9,6 +9,9 @@ You can open this sample in the Dev Environments feature of Docker Desktop versi
 Project structure:
 ```
 .
+├── frontend
+│   ├── Dockerfile
+│   └── compose.yaml
 ├── backend
 │   ├── Dockerfile
 │   ├── aspnet.csproj
