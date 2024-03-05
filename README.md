@@ -1,12 +1,12 @@
 ## Compose sample application
 
 ## TODO:
-`
+```
 1. Adjust the stack to be more compatible with my personal work flow
    - Swap out the C# back end with something else
 2. Implement redis with the new stack
 3. Build something using the tech stack
-`
+```
 
 
 ### Use with Docker Development Environments
