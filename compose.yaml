@@ -47,6 +47,11 @@ services:
       - MYSQL_DATABASE=example
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
 
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+
   proxy:
     build: proxy
     ports:
