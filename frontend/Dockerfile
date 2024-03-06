@@ -1,29 +1,29 @@
 # syntax=docker/dockerfile:1.4
 
-# 1. For build React app
-FROM node:lts AS development
+# Create image based on the official Node image from dockerhub
+FROM node:lts-buster AS development
 
-# Set working directory
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# 
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+# Copy dependency definitions
+COPY package.json /usr/src/app
+COPY package-lock.json /usr/src/app
 
-# Same as npm install
+# Install dependecies
+#RUN npm set progress=false \
+#    && npm config set depth 0 \
+#    && npm i install
 RUN npm ci
 
-COPY . /app
+# Get all the code needed to run the app
+COPY . /usr/src/app
 
-ENV CI=true
-ENV PORT=3000
+# Expose the port the app runs in
+EXPOSE 3000
 
-CMD [ "npm", "start" ]
-
-FROM development AS build
-
-RUN npm run build
-
+# Serve the app
+CMD ["npm", "start"]
 
 FROM development as dev-envs
 RUN <<EOF

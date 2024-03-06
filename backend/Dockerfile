@@ -1,23 +1,24 @@
 # syntax=docker/dockerfile:1.4
 
-FROM --platform=linux/amd64 mcr.microsoft.com/dotnet/sdk:6.0 AS base
+FROM node:lts-buster-slim AS development
 
-WORKDIR /src
+# Create app directory
+WORKDIR /usr/src/app
 
-COPY aspnetapp.csproj ./
-RUN ["dotnet", "restore"]
+COPY package.json /usr/src/app/package.json
+COPY package-lock.json /usr/src/app/package-lock.json
+RUN npm ci
 
-FROM base as builder
+COPY . /usr/src/app
 
-COPY . .
+EXPOSE 3000
 
-CMD ["dotnet", "build", "-c", "-o", "/build"]
+CMD [ "npm", "run", "dev" ]
 
-FROM builder as dev-envs
-
+FROM development as dev-envs
 RUN <<EOF
 apt-get update
-apt-get install -y git
+apt-get install -y --no-install-recommends git
 EOF
 
 RUN <<EOF
@@ -27,16 +28,4 @@ usermod -aG docker vscode
 EOF
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
-
-CMD ["dotnet", "run"]
-
-FROM builder AS publisher
-
-RUN ["dotnet", "publish", "-c", "Release", "-o", "/build"]
-
-FROM --platform=linux/amd64 mcr.microsoft.com/dotnet/aspnet:6.0
-
-WORKDIR /app
-COPY --from=publisher /build .
-
-CMD ["dotnet", "aspnetapp.dll"]
+CMD [ "npm", "run", "dev" ]
