@@ -1,68 +1,44 @@
 services:
-
   frontend:
     build:
       context: frontend
-      target: dev-envs
-    container_name: react-ui
-    restart: always
+      target: development
     ports:
-      - "80:3000"
-      - "3000:3000"
+      - 3000:3000
+    stdin_open: true
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  backend:
-    build:
-      context: backend
-      args:
-        BUILDPLATFORM: "linux/amd64"
-    container_name: net-backend
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
     restart: always
-    secrets:
-      - db-password
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      - ASPNETCORE_URLS=http://+:8000
-
-  db:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10-focal
-    # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8
-    command: '--default-authentication-plugin=mysql_native_password'
-    restart: always
-    healthcheck:
-      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db-password)" --silent']
-      interval: 3s
-      retries: 5
-      start_period: 30s
-    secrets:
-      - db-password
-    volumes:
-      - db-data:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=example
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
-
-  redis:
-    image: redis:latest
-    ports:
-      - '6379:6379'
-
-  proxy:
-    build: proxy
-    ports:
-      - 81:81
+    networks:
+      - react-express
     depends_on:
       - backend
-      - frontend
 
-volumes:
-  db-data:
-
-secrets:
-  db-password:
-    file: db/password.txt
+  backend:
+    restart: always
+    build:
+      context: backend
+      target: development
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongo
+    networks:
+      - express-mongo
+      - react-express
+    expose: 
+      - 3000
+  mongo:
+    restart: always
+    image: mongo:4.2.0
+    volumes:
+      - ./data:/data/db
+    networks:
+      - express-mongo
+    expose:
+      - 27017
+networks:
+  react-express:
+  express-mongo:
