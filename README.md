@@ -1,16 +1,27 @@
 ## Compose sample application
 
+## TODO:
+```
+1. Adjust the stack to be more compatible with my personal work flow
+   - Swap out the C# back end with something else
+2. Implement redis with the new stack
+3. Build something using the tech stack
+```
+
+
 ### Use with Docker Development Environments
 
 You can open this sample in the Dev Environments feature of Docker Desktop version 4.12 or later.
 
-[Open in Docker Dev Environments <img src="../open_in_new.svg" alt="Open in Docker Dev Environments" align="top"/>](https://open.docker.com/dashboard/dev-envs?url=https://github.com/docker/awesome-compose/tree/master/react-express-mongodb)
-
 ### React application with a NodeJS backend and a MongoDB database
+
 
 Project structure:
 ```
 .
+├── frontend
+│   ├── Dockerfile
+│   └── compose.yaml
 ├── backend
 │   ├── Dockerfile
 │   ...
@@ -73,6 +84,7 @@ Creating app             ... done
 Listing containers must show containers running and the port mapping as below:
 ```
 $ docker ps
+
 CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS                  PORTS                      NAMES
 06e606d69a0e        react-express-mongodb_server        "docker-entrypoint.s…"   23 minutes ago      Up 23 minutes           0.0.0.0:3000->3000/tcp     server
 ff56585e1db4        react-express-mongodb_frontend      "docker-entrypoint.s…"   23 minutes ago      Up 23 minutes           0.0.0.0:3000->3000/tcp     frontend
@@ -82,6 +94,7 @@ a1f321f06490        mongo:4.2.0                         "docker-entrypoint.s…"
 After the application starts, navigate to `http://localhost:3000` in your web browser.
 
 ![page](./output.png)
+
 
 Stop and remove the containers
 ```
